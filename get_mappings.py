@@ -8,7 +8,7 @@ MAPPINGS_URLS = [
     'http://mappings.dbpedia.org/index.php?title=Special:AllPages&namespace=204&from=US-company-stub&to=Year_dab'
 ]
 
-URL_PREFIX = 'http://mappings.dbpedia.org'
+URL_PREFIX = 'http://mappings.dbpedia.org/'
 HTML_CACHE_PATH_PREFIX = 'dbpedia/'
 
 
@@ -28,7 +28,7 @@ def get_infobox_urls(mapping_page):
     """
     Return list of urls of infobox pages
     """
-    pattern = re.compile('/index\.php/Mapping_en:Infobox_[-\w\./]+')
+    pattern = re.compile('index\.php/Mapping_en:Infobox_[-\w\./]+')
     return pattern.findall(mapping_page)
 
 
