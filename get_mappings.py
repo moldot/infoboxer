@@ -16,7 +16,6 @@ def get_page_and_store(url, cache_path=None):
     """
     Fetch a html page from url and store in store_path
     """
-
     page = urllib2.urlopen(url).read()
 
     if cache_path is not None:
@@ -35,9 +34,9 @@ def get_infobox_urls(mapping_page):
 
 def get_ontology_class(infobox_page):
     """
-    Return class of the infobox, given the HTML DEpedia infobox_page
+    Return class of the infobox, given the HTML DBpedia infobox_page
 
-    class is in CamelCase, exactly as appear in the infobox_page
+    class is in CamelCase (possibly with colon and space), exactly as appear in the infobox_page
     """
     pattern = re.compile('OntologyClass:[\w: ]+')
     ontology_class = pattern.findall(infobox_page)
@@ -53,12 +52,14 @@ def get_infobox_class_pairs(from_cache=True):
     Return pairs of (infobox, class)
 
     infobox format is lower case with hyphen (e.g. 'afl-player-2')
-    class format is as returbed by get_class_from_infobox_page.
+    class format is as returbed by get_ontology_class.
     """
     infobox_urls = []
     infobox_class_pairs = []
+    
     for i, mapping_url in enumerate(MAPPINGS_URLS):
         cache_path = HTML_CACHE_PATH_PREFIX + 'main_mapping_en_' + str(i+1) + '.html'
+        
         if from_cache:
             mapping_page = open(cache_path, 'r').read()
         else:
@@ -75,7 +76,6 @@ def get_infobox_class_pairs(from_cache=True):
         
         if from_cache:
             infobox_page = open(cache_path, 'r').read()
-
         else:
             infobox_page = get_page_and_store(URL_PREFIX + infobox_url, cache_path)
 
