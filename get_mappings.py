@@ -82,8 +82,3 @@ def get_infobox_class_pairs(from_cache=True):
         infobox_class_pairs.append((infobox, get_ontology_class(infobox_page)))
 
     return infobox_class_pairs
-
-
-for pair in get_infobox_class_pairs():
-    print pair
-
