@@ -1,0 +1,3 @@
+[submodule "wikiscout"]
+	path = wikiscout
+	url = https://github.com/alvaromorales/wikiscout
