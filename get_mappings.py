@@ -11,6 +11,7 @@ MAPPINGS_URLS = [
 URL_PREFIX = 'http://mappings.dbpedia.org'
 HTML_CACHE_PATH_PREFIX = 'dbpedia/'
 
+
 def get_page_and_store(url, cache_path=None):
     """
     Fetch a html page from url and store in store_path
@@ -32,15 +33,22 @@ def get_infobox_urls(mapping_page):
     return pattern.findall(mapping_page)
 
 
-def get_class_from_infobox_page(infobox_page):
+def get_ontology_class(infobox_page):
     """
     Return class of the infobox, given the HTML DEpedia infobox_page
 
     class is in CamelCase, exactly as appear in the infobox_page
     """
-    pass
+    pattern = re.compile('OntologyClass:[\w: ]+')
+    ontology_class = pattern.findall(infobox_page)
 
-def get_infobox_class_pairs(from_cache=False):
+    if len(ontology_class) == 0:
+        return None
+    else:
+        return ontology_class[0].replace('OntologyClass:', '')
+
+
+def get_infobox_class_pairs(from_cache=True):
     """
     Return pairs of (infobox, class)
 
@@ -48,10 +56,16 @@ def get_infobox_class_pairs(from_cache=False):
     class format is as returbed by get_class_from_infobox_page.
     """
     infobox_urls = []
-    for mapping_url in MAPPINGS_URLS:
-        mapping_page = get_page_and_store(mapping_url)
-        infobox_urls += get_infobox_urls(mapping_page)
+    infobox_class_pairs = []
+    for i, mapping_url in enumerate(MAPPINGS_URLS):
+        cache_path = HTML_CACHE_PATH_PREFIX + 'main_mapping_en_' + str(i+1) + '.html'
+        if from_cache:
+            mapping_page = open(cache_path, 'r').read()
+        else:
+            mapping_page = get_page_and_store(mapping_url, cache_path)
 
+        infobox_urls += get_infobox_urls(mapping_page)
+    
     for i, infobox_url in enumerate(infobox_urls):
         full_url = URL_PREFIX + infobox_url
         infobox = infobox_parser.get_class(infobox_url.split(':')[1]).replace('wikipedia-', '')
@@ -59,13 +73,17 @@ def get_infobox_class_pairs(from_cache=False):
 
         print '(%d/%d) %s' % (i+1, len(infobox_urls), infobox)
         
-        if from_cache or i < 169:
+        if from_cache:
             infobox_page = open(cache_path, 'r').read()
 
         else:
             infobox_page = get_page_and_store(URL_PREFIX + infobox_url, cache_path)
 
+        infobox_class_pairs.append((infobox, get_ontology_class(infobox_page)))
+
+    return infobox_class_pairs
 
 
-get_infobox_class_pairs()
+for pair in get_infobox_class_pairs():
+    print pair
 
