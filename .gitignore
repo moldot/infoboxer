@@ -1,3 +1,8 @@
 dbpedia/
 .ropeproject/
 *.swp
+*.pyc
+dist/
+extracted-new/
+test.py
+wikiscout.egg-info/
