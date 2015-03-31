@@ -6,3 +6,5 @@ dist/
 extracted-new/
 test.py
 wikiscout.egg-info/
+*.txt
+*.out
